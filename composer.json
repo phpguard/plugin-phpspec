@@ -11,7 +11,7 @@
     ],
     "require": {
         "phpspec/phpspec":          "2.1.*@dev",
-        "phpguard/phpguard":        "dev-plugin-separation"
+        "phpguard/phpguard":        "0.1.*@dev"
     },
     "require-dev": {
         "phpguard/plugin-phpunit":  "@dev"
