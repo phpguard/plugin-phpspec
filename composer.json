@@ -2,7 +2,6 @@
     "name": "phpguard/plugin-phpspec",
     "description": "PhpSpec Plugin for PhpGuard",
     "license": "MIT",
-    "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
@@ -15,7 +14,7 @@
         "phpguard/phpguard":        "dev-plugin-separation"
     },
     "require-dev": {
-        "phpguard/plugin-phpunit":  "dev-master"
+        "phpguard/plugin-phpunit":  "@dev"
     },
     "autoload": {
         "psr-4": {
