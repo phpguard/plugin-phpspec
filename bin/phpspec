@@ -9,9 +9,9 @@ if (is_dir($vendor = getcwd() . '/vendor')) {
 
 if (is_dir($vendor = __DIR__ . '/../vendor')) {
     require $vendor. '/autoload.php';
-} elseif (is_dir($vendor = __DIR__.'/../../../vendor')){
-    // path must be plugins/phpspec
-    require $vendor.'/autoload.php';
+} elseif (is_dir($vendor = __DIR__.'/../../../../vendor')){
+    // path must be composer installation
+    require_once $vendor.'/autoload.php';
 } else {
     die(
         'You must set up the project dependencies, run the following commands:' . PHP_EOL .
@@ -19,7 +19,6 @@ if (is_dir($vendor = __DIR__ . '/../vendor')) {
         'php composer.phar install' . PHP_EOL
     );
 }
-
 
 use PhpGuard\Plugins\PhpSpec\Bridge\Console\Application;
 $app = new Application();
