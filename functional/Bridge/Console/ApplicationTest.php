@@ -11,7 +11,6 @@
 
 namespace PhpGuard\Plugins\PhpSpec\functional\Bridge\Console;
 
-use PhpGuard\Application\PhpGuard;
 use PhpGuard\Plugins\PhpSpec\Functional\TestCase;
 
 class ApplicationTest extends TestCase
@@ -19,7 +18,6 @@ class ApplicationTest extends TestCase
     public function testShouldRunProperly()
     {
         static::buildFixtures();
-        static::$container->get('coverage.runner')->preCoverage();
         $tester = $this->getSpecTester();
         $tester->run('run -vvv');
         $this->assertContains('3 passed',$tester->getDisplay());

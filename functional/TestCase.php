@@ -15,6 +15,7 @@ use PhpGuard\Application\Test\ApplicationTester;
 use PhpGuard\Application\Test\FunctionalTestCase;
 use PhpGuard\Application\Util\Filesystem;
 
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -33,7 +34,7 @@ abstract class TestCase extends FunctionalTestCase
 
     public static function buildFixtures($type='psr0')
     {
-        static::$tmpDir = sys_get_temp_dir().'/phpguard-test/'.uniqid('phpguard');
+        static::$tmpDir = sys_get_temp_dir().'/phpguard-test/'.uniqid('phpspec');
         Filesystem::cleanDir(static::$tmpDir);
         Filesystem::mkdir(static::$tmpDir);
         static::createApplication();
