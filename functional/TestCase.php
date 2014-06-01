@@ -15,7 +15,6 @@ use PhpGuard\Application\Test\ApplicationTester;
 use PhpGuard\Application\Test\FunctionalTestCase;
 use PhpGuard\Application\Util\Filesystem;
 
-use PHPUnit_Framework_TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
