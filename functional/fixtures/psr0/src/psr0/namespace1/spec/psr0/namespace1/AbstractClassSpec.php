@@ -11,9 +11,8 @@
 
 namespace spec\psr0\namespace1;
 
-
 use PhpSpec\ObjectBehavior;
 
 abstract class AbstractClassSpec extends ObjectBehavior
 {
-} 
+}

@@ -18,7 +18,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
         SpecificationNode $specificationNode,
         ExampleEvent $exampleEvent,
         ServiceContainer $container,
-        CodeCoverageSession $coverageRunner
+        CodeCoverageSession $coverageSession
     )
     {
         $r = new \ReflectionClass(__CLASS__);
@@ -33,8 +33,8 @@ class PhpGuardExtensionSpec extends ObjectBehavior
         $this->cwd = getcwd();
         chdir(sys_get_temp_dir());
         $container->get('coverage.session')
-            ->willReturn($coverageRunner);
-        $this->setCoverageRunner($coverageRunner);
+            ->willReturn($coverageSession);
+        $this->setCoverageRunner($coverageSession);
         $this->load($container);
     }
 
@@ -62,7 +62,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
     }
 
     function it_should_start_coverage(
-        CodeCoverageSession $coverageRunner,
+        CodeCoverageSession $coverageSession,
         ExampleEvent $event,
         ExampleNode $example,
         SpecificationNode $specificationNode
@@ -75,7 +75,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
         $example->getTitle()->willReturn('title');
         $specificationNode->getClassReflection()->willReturn($reflection);
 
-        $coverageRunner->start(__CLASS__.' => title')
+        $coverageSession->start(__CLASS__.' => title')
             ->shouldBeCalled();
 
         $this->beforeExample($event);
@@ -84,7 +84,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
     function it_should_creates_result_event(
         ExampleEvent $exampleEvent,
         SpecificationNode $specificationNode,
-        CodeCoverageSession $coverageRunner
+        CodeCoverageSession $coverageSession
     )
     {
         $exampleEvent->getResult()
@@ -97,7 +97,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
             ->willReturn('SomeSpesification')
         ;
 
-        $coverageRunner->stop()
+        $coverageSession->stop()
             ->shouldBeCalled();
 
         $this->afterExample($exampleEvent);
@@ -105,10 +105,10 @@ class PhpGuardExtensionSpec extends ObjectBehavior
     }
 
     function it_should_save_coverage_sessions(
-        \PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession $coverageRunner
+        \PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession $coverageSession
     )
     {
-        $coverageRunner->saveState()->shouldBeCalled();
+        $coverageSession->saveState()->shouldBeCalled();
         $this->afterSuite();
     }
 }

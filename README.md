@@ -1,4 +1,4 @@
-# phpguard
+# PhpSpec Plugin
 
 PhpSpec plugin for PhpGuard
 

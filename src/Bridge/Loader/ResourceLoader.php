@@ -44,7 +44,7 @@ class ResourceLoader
                 //$dirFiles = $this->getSpecFiles($file);
                 $this->load($suite,$relative);
             } else {
-                if(!in_array($file,$loadedFiles)){
+                if (!in_array($file,$loadedFiles)) {
                     $this->load($suite,$file);
                     if ($suite->count()===0) {
                         $this->loadSpec($suite,$file);
@@ -125,8 +125,9 @@ class ResourceLoader
     }
 
     /**
-     * @param string       $locator
-     * @param integer|null $line
+     * @param \PhpSpec\Loader\Suite $suite
+     * @param string                $locator
+     * @param integer|null          $line
      *
      * @return Suite
      */

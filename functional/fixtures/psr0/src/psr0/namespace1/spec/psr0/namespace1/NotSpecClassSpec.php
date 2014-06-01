@@ -11,7 +11,6 @@
 
 namespace spec\psr0\namespace1;
 
-
 class NotSpecClassSpec
 {
 }
