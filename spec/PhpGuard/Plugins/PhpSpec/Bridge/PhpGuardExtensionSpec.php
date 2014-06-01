@@ -2,7 +2,7 @@
 
 namespace spec\PhpGuard\Plugins\PhpSpec\Bridge;
 
-use PhpGuard\Application\Bridge\CodeCoverageRunner;
+use PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession;
 use PhpGuard\Application\Spec\ObjectBehavior;
 use PhpSpec\Event\ExampleEvent;
 use PhpSpec\Loader\Node\ExampleNode;
@@ -18,7 +18,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
         SpecificationNode $specificationNode,
         ExampleEvent $exampleEvent,
         ServiceContainer $container,
-        CodeCoverageRunner $coverageRunner
+        CodeCoverageSession $coverageRunner
     )
     {
         $r = new \ReflectionClass(__CLASS__);
@@ -32,7 +32,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
         ;
         $this->cwd = getcwd();
         chdir(sys_get_temp_dir());
-        $container->get('coverage.runner')
+        $container->get('coverage.session')
             ->willReturn($coverageRunner);
         $this->setCoverageRunner($coverageRunner);
         $this->load($container);
@@ -62,7 +62,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
     }
 
     function it_should_start_coverage(
-        CodeCoverageRunner $coverageRunner,
+        CodeCoverageSession $coverageRunner,
         ExampleEvent $event,
         ExampleNode $example,
         SpecificationNode $specificationNode
@@ -84,7 +84,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
     function it_should_creates_result_event(
         ExampleEvent $exampleEvent,
         SpecificationNode $specificationNode,
-        CodeCoverageRunner $coverageRunner
+        CodeCoverageSession $coverageRunner
     )
     {
         $exampleEvent->getResult()
@@ -105,7 +105,7 @@ class PhpGuardExtensionSpec extends ObjectBehavior
     }
 
     function it_should_save_coverage_sessions(
-        CodeCoverageRunner $coverageRunner
+        \PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession $coverageRunner
     )
     {
         $coverageRunner->saveState()->shouldBeCalled();

@@ -11,7 +11,7 @@
 
 namespace PhpGuard\Plugins\PhpSpec\Bridge;
 
-use PhpGuard\Application\Bridge\CodeCoverageRunner;
+use PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession;
 use PhpGuard\Application\Event\ResultEvent;
 use PhpGuard\Application\Util\Filesystem;
 use PhpGuard\Plugins\PhpSpec\Inspector;
@@ -36,7 +36,7 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
     private $map = array();
 
     /**
-     * @var CodeCoverageRunner
+     * @var \PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession
      */
     private $coverage;
 
@@ -61,7 +61,7 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
         );
     }
 
-    public function setCoverageRunner(CodeCoverageRunner $runner)
+    public function setCoverageRunner(CodeCoverageSession $runner)
     {
         $this->coverage = $runner;
     }

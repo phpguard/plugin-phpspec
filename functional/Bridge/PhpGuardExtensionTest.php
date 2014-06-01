@@ -11,7 +11,7 @@
 
 namespace PhpGuard\Plugins\PhpSpec\functional\Bridge;
 
-use PhpGuard\Application\Bridge\CodeCoverageRunner;
+use PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession;
 use PhpGuard\Plugins\PhpSpec\Bridge\PhpGuardExtension;
 use PhpGuard\Plugins\PhpSpec\Functional\TestCase;
 use PhpGuard\Plugins\PhpSpec\Inspector;
@@ -24,9 +24,9 @@ class PhpGuardExtensionTest extends TestCase
      */
     private function getExtension()
     {
-        $runner = new CodeCoverageRunner();
+        $runner = new \PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession();
         $container = new ServiceContainer();
-        $container->set('coverage.runner',$runner);
+        $container->set('coverage.session',$runner);
 
         $extension = new PhpGuardExtension();
         $extension->load($container);

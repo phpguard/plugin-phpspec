@@ -12,7 +12,7 @@
 namespace PhpGuard\Plugins\PhpSpec\Bridge\Console;
 
 use Monolog\ErrorHandler;
-use PhpGuard\Application\Bridge\CodeCoverageRunner;
+use PhpGuard\Application\Bridge\CodeCoverage\CodeCoverageSession;
 use PhpGuard\Application\Event\ResultEvent;
 use PhpGuard\Application\PhpGuard;
 use PhpGuard\Application\Util\Filesystem;
@@ -49,7 +49,7 @@ class Application extends BaseApplication
     {
         $container->setShared('event_dispatcher.listeners.phpguard',function ($c) {
             $ext = new PhpGuardExtension();
-            if ($runner = CodeCoverageRunner::getCached()) {
+            if ($runner = CodeCoverageSession::getCached()) {
                 $ext->setCoverageRunner($runner);
             }
             $ext->load($c);
