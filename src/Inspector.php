@@ -121,7 +121,7 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         $results = $this->renderResult();
 
         if (0===$process->getExitCode()) {
-            foreach($files as $file){
+            foreach ($files as $file) {
                 $file = rtrim(str_replace(getcwd(),'',$file),'\\/');
                 $results[] = ResultEvent::createSucceed('Succeed: <highlight>'.$file.'</highlight>');
             }
@@ -212,10 +212,10 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
             }
         }
 
-        foreach($data as $resultEvent) {
+        foreach ($data as $resultEvent) {
             $file = $resultEvent->getArgument('file');
             $failedKey = md5($file);
-            if(!$resultEvent->isSucceed()){
+            if (!$resultEvent->isSucceed()) {
                 $this->failed[$failedKey] = $resultEvent;
                 $results[] = $resultEvent;
             }
