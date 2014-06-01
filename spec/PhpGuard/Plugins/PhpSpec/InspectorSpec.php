@@ -26,7 +26,6 @@ class InspectorSpec extends ObjectBehavior
     )
     {
         $this->cacheFile = Inspector::getCacheFileName();
-        @unlink($this->cacheFile);
         $container->get('runner')
             ->willReturn($runner)
         ;

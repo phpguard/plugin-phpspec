@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class RunCommand
  *
@@ -34,7 +33,7 @@ class RunCommand extends BaseRunCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $specFiles = $input->getOption('spec-files');
-        if(is_null($specFiles)){
+        if (is_null($specFiles)) {
             return $this->doRunNormally($input,$output);
         }
         $specFiles = explode(',',$specFiles);

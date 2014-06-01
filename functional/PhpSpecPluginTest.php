@@ -9,8 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PhpGuard\Plugins\PhpSpec\Functional;
-
+namespace PhpGuard\Plugins\PhpSpec\functional;
 
 class PhpSpecPluginTest extends TestCase
 {
@@ -130,7 +129,6 @@ class PhpSpecPluginTest extends TestCase
             ),
         );
     }
-
 
     public function testShouldKeepRunningFailedSpec()
     {

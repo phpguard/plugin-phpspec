@@ -11,7 +11,6 @@
 
 namespace PhpGuard\Plugins\PhpSpec\Command;
 
-
 use PhpGuard\Application\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

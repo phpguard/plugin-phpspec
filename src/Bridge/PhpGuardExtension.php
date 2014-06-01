@@ -14,12 +14,8 @@ namespace PhpGuard\Plugins\PhpSpec\Bridge;
 use PhpGuard\Application\Bridge\CodeCoverageRunner;
 use PhpGuard\Application\Event\ResultEvent;
 use PhpGuard\Application\Util\Filesystem;
-use PhpGuard\Listen\Util\PathUtil;
 use PhpGuard\Plugins\PhpSpec\Inspector;
-use PhpSpec\Console\IO;
 use PhpSpec\Event\ExampleEvent;
-use PhpSpec\Event\SpecificationEvent;
-use PhpSpec\Event\SuiteEvent;
 use PhpSpec\Extension\ExtensionInterface;
 use PhpSpec\Loader\Node\SpecificationNode;
 use PhpSpec\ServiceContainer;
@@ -44,11 +40,16 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
      */
     private $coverage;
 
-    function __construct()
+    /**
+     * @param ServiceContainer $container
+     */
+    public function load(ServiceContainer $container)
     {
+        /* @var EventDispatcherInterface $dispatcher */
+
         $file = Inspector::getCacheFileName();
-        if(file_exists($file)){
-            unlink($file);
+        if (file_exists($file)) {
+            unlink($file);// @codeCoverageIgnore
         }
 
         $this->map = array(
@@ -58,23 +59,17 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
             ExampleEvent::PENDING => ResultEvent::FAILED,
             ExampleEvent::SKIPPED => ResultEvent::BROKEN,
         );
-
-        $this->coverage = CodeCoverageRunner::getCached();
     }
 
-    /**
-     * @param ServiceContainer $container
-     */
-    public function load(ServiceContainer $container)
+    public function setCoverageRunner(CodeCoverageRunner $runner)
     {
-        /* @var EventDispatcherInterface $dispatcher */
-        //$this->io = $container->get('console.io');
+        $this->coverage = $runner;
     }
 
-    public function afterSuite(SuiteEvent $event)
+    public function afterSuite()
     {
         Filesystem::serialize(Inspector::getCacheFileName(),$this->results);
-        if($this->coverage){
+        if ($this->coverage) {
             $this->coverage->saveState();
         }
     }
@@ -83,12 +78,12 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
     {
         $example = $event->getExample();
 
-        $name = strtr('%spec%::%example%', array(
+        $name = strtr('%spec% => %example%', array(
             '%spec%' => $example->getSpecification()->getClassReflection()->getName(),
-            '%example%' => $example->getFunctionReflection()->getName(),
+            '%example%' => $example->getTitle(),
         ));
 
-        if($this->coverage){
+        if ($this->coverage) {
             $this->coverage->start($name);
         }
     }
@@ -97,7 +92,7 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
     {
         $type = $this->map[$event->getResult()];
         $this->addResult($type,$event->getSpecification(),$event->getTitle());
-        if($this->coverage){
+        if ($this->coverage) {
             $this->coverage->stop();
         }
     }
@@ -113,7 +108,6 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
             'beforeExample' => array('beforeExample',-10),
             'afterExample'  => array('afterExample', -10),
             'afterSuite'    => array('afterSuite', -10),
-            //'afterSpecification' => array('afterSpecification',-10),
         );
     }
 

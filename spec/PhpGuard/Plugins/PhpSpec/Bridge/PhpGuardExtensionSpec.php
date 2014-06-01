@@ -2,20 +2,23 @@
 
 namespace spec\PhpGuard\Plugins\PhpSpec\Bridge;
 
+use PhpGuard\Application\Bridge\CodeCoverageRunner;
 use PhpGuard\Application\Spec\ObjectBehavior;
 use PhpSpec\Event\ExampleEvent;
-use PhpSpec\Formatter\Presenter\PresenterInterface;
-use PhpSpec\IO\IOInterface;
-use PhpSpec\Listener\StatisticsCollector;
+use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\Loader\Node\SpecificationNode;
 use Prophecy\Argument;
+use PhpSpec\ServiceContainer;
 
 class PhpGuardExtensionSpec extends ObjectBehavior
 {
     protected $cwd;
+
     function let(
         SpecificationNode $specificationNode,
-        ExampleEvent $exampleEvent
+        ExampleEvent $exampleEvent,
+        ServiceContainer $container,
+        CodeCoverageRunner $coverageRunner
     )
     {
         $r = new \ReflectionClass(__CLASS__);
@@ -29,6 +32,10 @@ class PhpGuardExtensionSpec extends ObjectBehavior
         ;
         $this->cwd = getcwd();
         chdir(sys_get_temp_dir());
+        $container->get('coverage.runner')
+            ->willReturn($coverageRunner);
+        $this->setCoverageRunner($coverageRunner);
+        $this->load($container);
     }
 
     function letgo()
@@ -41,14 +48,43 @@ class PhpGuardExtensionSpec extends ObjectBehavior
         $this->shouldHaveType('PhpGuard\Plugins\PhpSpec\Bridge\PhpGuardExtension');
     }
 
+    function it_should_subscribe_events()
+    {
+        $events = $this->getSubscribedEvents();
+        $events->shouldHaveKey('beforeExample');
+        $events->shouldHaveKey('afterExample');
+        $events->shouldHaveKey('afterSuite');
+    }
+
     function it_should_be_the_PhpSpec_Extension()
     {
         $this->shouldImplement('PhpSpec\\Extension\\ExtensionInterface');
     }
 
+    function it_should_start_coverage(
+        CodeCoverageRunner $coverageRunner,
+        ExampleEvent $event,
+        ExampleNode $example,
+        SpecificationNode $specificationNode
+    )
+    {
+        $reflection = new \ReflectionClass($this);
+
+        $event->getExample()->willReturn($example);
+        $example->getSpecification()->willReturn($specificationNode);
+        $example->getTitle()->willReturn('title');
+        $specificationNode->getClassReflection()->willReturn($reflection);
+
+        $coverageRunner->start(__CLASS__.' => title')
+            ->shouldBeCalled();
+
+        $this->beforeExample($event);
+    }
+
     function it_should_creates_result_event(
         ExampleEvent $exampleEvent,
-        SpecificationNode $specificationNode
+        SpecificationNode $specificationNode,
+        CodeCoverageRunner $coverageRunner
     )
     {
         $exampleEvent->getResult()
@@ -61,8 +97,18 @@ class PhpGuardExtensionSpec extends ObjectBehavior
             ->willReturn('SomeSpesification')
         ;
 
+        $coverageRunner->stop()
+            ->shouldBeCalled();
+
         $this->afterExample($exampleEvent);
         $this->getResults()->shouldHaveCount(1);
-        //$this->getResults()->shouldHaveCount(1000);
+    }
+
+    function it_should_save_coverage_sessions(
+        CodeCoverageRunner $coverageRunner
+    )
+    {
+        $coverageRunner->saveState()->shouldBeCalled();
+        $this->afterSuite();
     }
 }

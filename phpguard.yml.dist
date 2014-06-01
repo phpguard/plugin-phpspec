@@ -8,7 +8,7 @@ phpguard:
             - vendor
         show_uncovered_files: true
         show_only_summary: true
-        output.html:    build/coverage
+        #output.html:    build/coverage
         output.text:    true
         output.clover:  build/logs/clover.xml
 

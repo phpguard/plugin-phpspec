@@ -20,7 +20,6 @@ use PhpGuard\Application\PhpGuard;
 use PhpGuard\Application\Util\Filesystem;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
@@ -55,7 +54,7 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
     {
         // always clear serialized result when Inspector object created
         $file = Inspector::getCacheFileName();
-        if(file_exists($file)){
+        if (file_exists($file)) {
             unlink($file);
         }
     }
@@ -73,9 +72,10 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         $this->cmdRunAll = $cmd.' '.$allOptions['cli'];
     }
 
-    static public function getCacheFileName()
+    public static function getCacheFileName()
     {
         $dir = PhpGuard::getPluginCache('phpspec');
+
         return $dir.DIRECTORY_SEPARATOR.'results.dat';
     }
 
@@ -97,9 +97,10 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
     public function runAll()
     {
         $results = $this->doRunAll();
-        if(count($this->failed) > 0){
+        if (count($this->failed) > 0) {
             $this->container->setParameter('application.exit_code',ResultEvent::FAILED);
         }
+
         return new ProcessEvent(
             $this->container->get('plugins.phpspec'),
             $results
@@ -119,8 +120,8 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         $process = $runner->run($builder);
         $results = $this->renderResult();
 
-        if(0===$process->getExitCode()){
-            if($this->options['all_after_pass']){
+        if (0===$process->getExitCode()) {
+            if ($this->options['all_after_pass']) {
                 $this->logger->addSuccess('Run all specs after pass');
                 $allSpecs = $this->doRunAll();
                 $results = array_merge($results,$allSpecs);
@@ -131,28 +132,28 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
             $this->container->get('plugins.phpspec'),
             $results
         );
-        if(count($this->failed) > 0){
+        if (count($this->failed) > 0) {
             $this->container->setParameter('application.exit_code',ResultEvent::FAILED);
         }
+
         return $event;
     }
 
     private function doRunAll()
     {
         $command = $this->cmdRunAll;
-        if($this->options['keep_failed']){
+        if ($this->options['keep_failed']) {
             $files = array();
-            foreach($this->failed as $key=>$failedEvent)
-            {
+            foreach ($this->failed as $key=>$failedEvent) {
                 $file = $failedEvent->getArgument('file');
-                if(file_exists($file)){
+                if (file_exists($file)) {
                     $file = ltrim(str_replace(getcwd(),'',$file),'\\/');
-                    if(!in_array($file,$files)){
+                    if (!in_array($file,$files)) {
                         $files[] = $file;
                     }
                 }
             }
-            if(!empty($files)){
+            if (!empty($files)) {
                 $command = $this->cmdRun;
                 $specFiles = implode(',',$files);
                 $command = $command.' --spec-files='.$specFiles;
@@ -169,15 +170,16 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         // not showing success events for run all
         $results = $this->renderResult(false);
 
-        if(count($this->failed)===0){
+        if (count($this->failed)===0) {
             $results['all_after_pass'] = ResultEvent::createSucceed('Run all specs success');
         }
+
         return $results;
     }
 
     /**
-     * @param   bool $showSuccess
-     * @return  array
+     * @param  bool  $showSuccess
+     * @return array
      */
     private function renderResult($showSuccess = true)
     {
@@ -185,7 +187,7 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         $results = array();
 
         $file = static::getCacheFileName();
-        if(!file_exists($file)){
+        if (!file_exists($file)) {
             throw new \RuntimeException(sprintf(
                 'Unknown PhpSpec results'
             ));
@@ -193,16 +195,16 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
 
         $data = Filesystem::unserialize($file);
 
-        foreach($data as $key => $resultEvent){
-            if($resultEvent->isSucceed()){
-                if($showSuccess){
+        foreach ($data as $key => $resultEvent) {
+            if ($resultEvent->isSucceed()) {
+                if ($showSuccess) {
                     $results[$key] = $resultEvent;
                 }
-                if(isset($this->failed[$key])){
+                if (isset($this->failed[$key])) {
                     unset($this->failed[$key]);
                 }
                 //$this->logger->addDebug($key.' '.$resultEvent->getMessage());
-            }else{
+            } else {
                 // track failed result
                 $this->failed[$key] = $resultEvent;
                 $results[$key] = $resultEvent;

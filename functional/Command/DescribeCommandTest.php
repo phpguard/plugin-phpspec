@@ -9,11 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace PhpGuard\Plugins\PhpSpec\Functional\Command;
+namespace PhpGuard\Plugins\PhpSpec\functional\Command;
 
 use PhpGuard\Plugins\PhpSpec\Functional\TestCase;
 use PhpGuard\Plugins\PhpSpec\Command\DescribeCommand;
-use Symfony\Component\Console\Tester\CommandTester;
 
 class DescribeCommandTest extends TestCase
 {
@@ -27,4 +26,3 @@ class DescribeCommandTest extends TestCase
         $this->assertDisplayContains('psr0\\namespace1\\FooClass');
     }
 }
- 

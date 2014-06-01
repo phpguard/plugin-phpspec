@@ -11,15 +11,11 @@
 
 namespace PhpGuard\Plugins\PhpSpec;
 
-use PhpGuard\Application\Exception\ConfigurationException;
 use PhpGuard\Application\Plugin\Plugin;
-use PhpGuard\Application\Util\Locator;
 use PhpGuard\Application\Watcher;
 use PhpGuard\Listen\Util\PathUtil;
 use PhpGuard\Plugins\PhpSpec\Command\DescribeCommand;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class PhpSpecPlugin extends Plugin
 {
@@ -35,10 +31,10 @@ class PhpSpecPlugin extends Plugin
     {
         parent::addWatcher($watcher);
 
-        if($this->options['always_lint']){
+        if ($this->options['always_lint']) {
             $options = $watcher->getOptions();
             $linters = array_keys($options['lint']);
-            if(!in_array('php',$linters)){
+            if (!in_array('php',$linters)) {
                 $linters[] = 'php';
                 $options['lint'] = $linters;
                 $watcher->setOptions($options);
@@ -61,10 +57,11 @@ class PhpSpecPlugin extends Plugin
         $logger = $this->logger;
         $options = $this->options;
 
-        $container->setShared('phpspec.inspector',function($c) use($logger,$options){
+        $container->setShared('phpspec.inspector',function ($c) use ($logger,$options) {
             $inspector = new Inspector();
             $inspector->setLogger($logger);
             $inspector->setContainer($c);
+
             return $inspector;
         });
     }
@@ -90,15 +87,15 @@ class PhpSpecPlugin extends Plugin
     public function run(array $paths = array())
     {
         $specFiles = array();
-        foreach($paths as $file)
-        {
+        foreach ($paths as $file) {
             $spl = PathUtil::createSplFileInfo(getcwd(),$file);
             $relative = $spl->getRelativePathname();
-            if(!in_array($relative,$specFiles)){
+            if (!in_array($relative,$specFiles)) {
                 $specFiles[] = $spl->getRelativePathname();
             }
         }
         $inspector = $this->container->get('phpspec.inspector');
+
         return $inspector->run($specFiles);
     }
 

@@ -11,8 +11,7 @@
 
 namespace psr4\namespace2;
 
-
 class Foo
 {
 
-} 
+}

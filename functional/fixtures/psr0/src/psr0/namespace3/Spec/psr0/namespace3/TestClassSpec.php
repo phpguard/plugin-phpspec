@@ -6,7 +6,7 @@ use PhpSpec\ObjectBehavior;
 
 class TestClassSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('psr0\\namespace3\\TestClass');
     }

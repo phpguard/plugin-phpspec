@@ -12,17 +12,13 @@
 namespace PhpGuard\Plugins\PhpSpec\Bridge\Loader;
 
 use PhpGuard\Application\Util\Locator;
-use PhpSpec\Locator\PSR0\PSR0Locator;
-use PhpSpec\Locator\PSR0\PSR0Resource;
 use PhpSpec\Locator\ResourceInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\Loader\Node\SpecificationNode;
-use PhpSpec\Loader\ResourceLoader as BaseResourceLoader;
 use PhpSpec\Loader\Suite;
 use PhpSpec\Locator\ResourceManager;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -40,15 +36,15 @@ class ResourceLoader
 
     public function loadSpecFiles(Suite $suite,array $files)
     {
-        foreach($files as $file){
+        foreach ($files as $file) {
             $relative = str_replace(getcwd(),'',$file);
             $relative = ltrim($relative,'\\/');
-            if(is_dir($file)){
+            if (is_dir($file)) {
                 //$dirFiles = $this->getSpecFiles($file);
                 $this->load($suite,$relative);
-            }else{
+            } else {
                 $this->load($suite,$file);
-                if($suite->count()===0){
+                if ($suite->count()===0) {
                     $this->loadSpec($suite,$file);
                 }
 
@@ -58,33 +54,33 @@ class ResourceLoader
 
     private function loadSpec(Suite $suite,$specFile)
     {
-        if(is_file($file=getcwd().'/phpspec.yml')){
+        if (is_file($file=getcwd().'/phpspec.yml')) {
             $configFile = $file;
-        }elseif(is_file($file=getcwd().'/phpspec.yml.dist')){
+        } elseif (is_file($file=getcwd().'/phpspec.yml.dist')) {
             $configFile = $file;
         }
-        if(!is_file($configFile)){
+        if (!is_file($configFile)) {
             return;
         }
 
         $config = Yaml::parse($configFile);
-        if(!isset($config['suites'])){
+        if (!isset($config['suites'])) {
             return;
         }
 
         $absSpecFile = realpath($specFile);
         $manager = $this->manager;
-        foreach($config['suites'] as $name => $definition){
+        foreach ($config['suites'] as $name => $definition) {
             $srcPath = isset($definition['src']) ? $definition['src']:'src';
             $specPath = isset($definition['spec_path']) ? $definition['spec_path']:'spec';
             $specPrefix = isset($definition['spec_prefix']) ? $definition['spec_prefix']:'spec';
             $psr4prefix = isset($definition['psr4_prefix']) ? $definition['psr4_prefix']: null;
             $absSpecPath = realpath($specPath);
-            if(false!==strpos($absSpecFile,$absSpecPath)){
+            if (false!==strpos($absSpecFile,$absSpecPath)) {
                 $len = strlen($absSpecPath);
                 $dir = substr($absSpecFile,0,$len);
-                foreach($manager->locateResources($dir) as $resource){
-                    if(false!==strpos($resource->getSpecFilename(),$absSpecFile)){
+                foreach ($manager->locateResources($dir) as $resource) {
+                    if (false!==strpos($resource->getSpecFilename(),$absSpecFile)) {
                         $this->importResource($suite,$resource);
                         break;
                     }
@@ -151,7 +147,6 @@ class ResourceLoader
         }
 
         $reflection = new ReflectionClass($resource->getSpecClassname());
-
 
         if ($reflection->isAbstract()) {
             return;
