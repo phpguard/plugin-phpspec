@@ -36,6 +36,7 @@ class ResourceLoader
 
     public function loadSpecFiles(Suite $suite,array $files)
     {
+        $loadedFiles = array();
         foreach ($files as $file) {
             $relative = str_replace(getcwd(),'',$file);
             $relative = ltrim($relative,'\\/');
@@ -43,17 +44,20 @@ class ResourceLoader
                 //$dirFiles = $this->getSpecFiles($file);
                 $this->load($suite,$relative);
             } else {
-                $this->load($suite,$file);
-                if ($suite->count()===0) {
-                    $this->loadSpec($suite,$file);
+                if(!in_array($file,$loadedFiles)){
+                    $this->load($suite,$file);
+                    if ($suite->count()===0) {
+                        $this->loadSpec($suite,$file);
+                    }
+                    $loadedFiles[] = $file;
                 }
-
             }
         }
     }
 
     private function loadSpec(Suite $suite,$specFile)
     {
+        $configFile = null;
         if (is_file($file=getcwd().'/phpspec.yml')) {
             $configFile = $file;
         } elseif (is_file($file=getcwd().'/phpspec.yml.dist')) {
@@ -71,10 +75,7 @@ class ResourceLoader
         $absSpecFile = realpath($specFile);
         $manager = $this->manager;
         foreach ($config['suites'] as $name => $definition) {
-            $srcPath = isset($definition['src']) ? $definition['src']:'src';
             $specPath = isset($definition['spec_path']) ? $definition['spec_path']:'spec';
-            $specPrefix = isset($definition['spec_prefix']) ? $definition['spec_prefix']:'spec';
-            $psr4prefix = isset($definition['psr4_prefix']) ? $definition['psr4_prefix']: null;
             $absSpecPath = realpath($specPath);
             if (false!==strpos($absSpecFile,$absSpecPath)) {
                 $len = strlen($absSpecPath);
