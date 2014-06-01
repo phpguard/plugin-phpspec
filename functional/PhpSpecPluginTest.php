@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PhpGuard\Plugins\PhpSpec\functional;
+namespace PhpGuard\Plugins\PhpSpec\Functional;
 
 class PhpSpecPluginTest extends TestCase
 {

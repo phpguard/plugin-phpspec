@@ -121,6 +121,10 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         $results = $this->renderResult();
 
         if (0===$process->getExitCode()) {
+            foreach($files as $file){
+                $file = rtrim(str_replace(getcwd(),'',$file),'\\/');
+                $results[] = ResultEvent::createSucceed('Succeed: <highlight>'.$file.'</highlight>');
+            }
             if ($this->options['all_after_pass']) {
                 $this->logger->addSuccess('Run all specs after pass');
                 $allSpecs = $this->doRunAll();
@@ -153,6 +157,7 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
                     }
                 }
             }
+            $files = array_unique($files);
             if (!empty($files)) {
                 $command = $this->cmdRun;
                 $specFiles = implode(',',$files);
@@ -171,17 +176,18 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         $results = $this->renderResult(false);
 
         if (count($this->failed)===0) {
-            $results['all_after_pass'] = ResultEvent::createSucceed('Run all specs success');
+            $results[] = ResultEvent::createSucceed('Run all specs success');
         }
 
         return $results;
     }
 
     /**
-     * @param  bool  $showSuccess
+     * @throws \RuntimeException
+     *
      * @return array
      */
-    private function renderResult($showSuccess = true)
+    private function renderResult()
     {
         /* @var ResultEvent $resultEvent */
         $results = array();
@@ -195,19 +201,23 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
 
         $data = Filesystem::unserialize($file);
 
-        foreach ($data as $key => $resultEvent) {
+        // processing succeed first
+        foreach ($data as $resultEvent) {
+            $file = $resultEvent->getArgument('file');
+            $failedKey = md5($file);
             if ($resultEvent->isSucceed()) {
-                if ($showSuccess) {
-                    $results[$key] = $resultEvent;
+                if (isset($this->failed[$failedKey])) {
+                    unset($this->failed[$failedKey]);
                 }
-                if (isset($this->failed[$key])) {
-                    unset($this->failed[$key]);
-                }
-                //$this->logger->addDebug($key.' '.$resultEvent->getMessage());
-            } else {
-                // track failed result
-                $this->failed[$key] = $resultEvent;
-                $results[$key] = $resultEvent;
+            }
+        }
+
+        foreach($data as $resultEvent) {
+            $file = $resultEvent->getArgument('file');
+            $failedKey = md5($file);
+            if(!$resultEvent->isSucceed()){
+                $this->failed[$failedKey] = $resultEvent;
+                $results[] = $resultEvent;
             }
         }
 

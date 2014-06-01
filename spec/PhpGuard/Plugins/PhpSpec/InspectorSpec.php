@@ -72,8 +72,6 @@ class InspectorSpec extends ObjectBehavior
         ContainerInterface $container
     )
     {
-
-
         $results = array(
             'succeed' => ResultEvent::createSucceed('Succeed'),
             'failed' => ResultEvent::createFailed('Failed'),
@@ -93,10 +91,7 @@ class InspectorSpec extends ObjectBehavior
             ->shouldBeCalled();
         
         $results = $this->run(array('some_path'));
-        $results->getResults()->shouldHaveCount(3);
-        $results->getResults()->shouldHaveKey('succeed');
-        $results->getResults()->shouldHaveKey('failed');
-        $results->getResults()->shouldHaveKey('broken');
+        $results->getResults()->shouldHaveCount(2);
     }
 
     function it_should_runAll_after_pass(
@@ -129,9 +124,8 @@ class InspectorSpec extends ObjectBehavior
             ->willReturn(0)
         ;
         $results = $this->run(array('some_path'));
-        $results->getResults()->shouldHaveCount(2);
-        $results->getResults()->shouldHaveKey('succeed');
-        $results->getResults()->shouldHaveKey('all_after_pass');
+        $results = $results->getResults();
+        $results->shouldHaveCount(2);
     }
 
     function its_runAll_create_success_event_if_results_only_contain_success_events(
@@ -151,7 +145,8 @@ class InspectorSpec extends ObjectBehavior
 
         $results = $this->runAll()->getResults();
         $results->shouldHaveCount(1);
-        $results->shouldHaveKey('all_after_pass');
+        $result = $results[0];
+        $result->shouldBeSucceed();
     }
 
     function it_throws_when_results_file_not_exists()
