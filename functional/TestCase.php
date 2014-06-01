@@ -76,7 +76,7 @@ class {$class}
 EOF;
         $absPath = static::$tmpDir.DIRECTORY_SEPARATOR.$target;
         $dir = dirname($absPath);
-        static::mkdir($dir);
+        Filesystem::mkdir($dir);
         file_put_contents($absPath,$content,LOCK_EX);
     }
 
@@ -126,7 +126,6 @@ EOF;
     protected function clearCache()
     {
         @unlink(Inspector::getCacheFileName());
-        @unlink(Inspector::getErrorFileName());
     }
 
     /**

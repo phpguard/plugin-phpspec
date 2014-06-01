@@ -28,6 +28,12 @@ class ApplicationTest extends TestCase
 
     public function testShouldRunWithSpecFiles()
     {
+        $this->buildSpec(
+            'src/psr0/namespace1/spec/psr0/namespace1/NotExistClassSpec.php',
+            'SomeClass',
+            '$this->shouldHaveType("something");'
+        );
+        $this->buildClass('src/psr0/namespace1/NotExistClass.php','psr0/namespace1/NotExistClass');
         $tester = $this->getSpecTester();
         $tester->run('run --spec-files=src/psr0/namespace1');
         $this->assertContains('1 passed',$tester->getDisplay());
