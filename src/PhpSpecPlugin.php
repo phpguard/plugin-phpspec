@@ -11,6 +11,8 @@
 
 namespace PhpGuard\Plugins\PhpSpec;
 
+use PhpGuard\Application\ApplicationEvents;
+use PhpGuard\Application\Event\GenericEvent;
 use PhpGuard\Application\Plugin\Plugin;
 use PhpGuard\Application\Watcher;
 use PhpGuard\Listen\Util\PathUtil;
@@ -25,6 +27,22 @@ class PhpSpecPlugin extends Plugin
     {
         // set default options for phpspec plugin
         $this->setOptions(array());
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            ApplicationEvents::started => 'started'
+        );
+    }
+
+    public function started(GenericEvent $event)
+    {
+        if($this->options['all_on_start']){
+            $this->logger->addDebug('Begin executing all on start');
+            $event->addProcessEvent($this->runAll());
+            $this->logger->addDebug('End executing all on start');
+        }
     }
 
     public function addWatcher(Watcher $watcher)
@@ -61,7 +79,6 @@ class PhpSpecPlugin extends Plugin
             $inspector = new Inspector();
             $inspector->setLogger($logger);
             $inspector->setContainer($c);
-
             return $inspector;
         });
     }
