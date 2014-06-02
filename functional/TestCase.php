@@ -34,8 +34,8 @@ abstract class TestCase extends FunctionalTestCase
     public static function buildFixtures($type='psr0')
     {
         static::$tmpDir = sys_get_temp_dir().'/phpguard-test/'.uniqid('phpspec');
-        Filesystem::cleanDir(static::$tmpDir);
-        Filesystem::mkdir(static::$tmpDir);
+        Filesystem::create()->cleanDir(static::$tmpDir);
+        Filesystem::create()->mkdir(static::$tmpDir);
         static::createApplication();
         if (is_null(static::$cwd)) {
             static::$cwd = getcwd();
@@ -43,7 +43,7 @@ abstract class TestCase extends FunctionalTestCase
         chdir(static::$tmpDir);
 
         $finder = Finder::create();
-        Filesystem::copyDir(__DIR__.'/fixtures/'.$type,static::$tmpDir,$finder);
+        Filesystem::create()->copyDir(__DIR__.'/fixtures/'.$type,static::$tmpDir,$finder);
 
         $exFinder = new ExecutableFinder();
         if (!is_executable($executable=$exFinder->find('composer.phar'))) {
@@ -76,7 +76,7 @@ class {$class}
 EOF;
         $absPath = static::$tmpDir.DIRECTORY_SEPARATOR.$target;
         $dir = dirname($absPath);
-        Filesystem::mkdir($dir);
+        Filesystem::create()->mkdir($dir);
         file_put_contents($absPath,$content,LOCK_EX);
     }
 
@@ -116,7 +116,7 @@ EOF;
         $content = str_replace('%relative_path%',$target,$content);
         $target = static::$tmpDir.'/'.$target;
         $dir = dirname($target);
-        Filesystem::mkdir($dir);
+        Filesystem::create()->mkdir($dir);
 
         file_put_contents($target,$content);
 

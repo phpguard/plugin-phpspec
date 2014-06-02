@@ -115,7 +115,7 @@ class Application extends BaseApplication
                 $traces
             );
 
-            Filesystem::serialize(Inspector::getCacheFileName(),array($event));
+            Filesystem::create()->serialize(Inspector::getCacheFileName(),array($event));
         }
 
         return false;

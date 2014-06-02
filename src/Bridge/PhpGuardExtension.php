@@ -68,7 +68,7 @@ class PhpGuardExtension implements ExtensionInterface,EventSubscriberInterface
 
     public function afterSuite()
     {
-        Filesystem::serialize(Inspector::getCacheFileName(),$this->results);
+        Filesystem::create()->serialize(Inspector::getCacheFileName(),$this->results);
         if ($this->coverage) {
             $this->coverage->saveState();
         }

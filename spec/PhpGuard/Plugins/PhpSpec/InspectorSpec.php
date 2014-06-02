@@ -79,7 +79,7 @@ class InspectorSpec extends ObjectBehavior
             //'error' => ResultEvent::createError('error',new \Exception('some exception')),
         );
 
-        Filesystem::serialize($this->cacheFile,$results);
+        Filesystem::create()->serialize($this->cacheFile,$results);
         $runner->run(Argument::any())
             ->shouldBeCalled()
         ;
@@ -115,7 +115,7 @@ class InspectorSpec extends ObjectBehavior
             'succeed' => ResultEvent::createSucceed('Succeed'),
         );
 
-        Filesystem::serialize($this->cacheFile,$results);
+        Filesystem::create()->serialize($this->cacheFile,$results);
         $runner->run(Argument::any())
             ->shouldBeCalled()
         ;
@@ -137,7 +137,7 @@ class InspectorSpec extends ObjectBehavior
             'succeed2' => ResultEvent::createSucceed('Succeed2'),
             'succeed3' => ResultEvent::createSucceed('Succeed3'),
         );
-        Filesystem::serialize($this->cacheFile,$results);
+        Filesystem::create()->serialize($this->cacheFile,$results);
 
         $runner->run(Argument::any())
             ->shouldBeCalled()

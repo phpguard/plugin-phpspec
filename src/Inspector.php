@@ -196,7 +196,7 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
             ));
         }
 
-        $data = Filesystem::unserialize($file);
+        $data = Filesystem::create()->unserialize($file);
 
         // processing succeed first
         foreach ($data as $resultEvent) {
