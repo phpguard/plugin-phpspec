@@ -1,4 +1,5 @@
 phpguard:
+    ignores: build
     coverage:
         whitelist:
             - src
