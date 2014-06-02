@@ -66,10 +66,8 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
         $this->plugin = $plugin = $container->get('plugins.phpspec');
         $this->options = $options = $plugin->getOptions();
         $this->cmdRun = $cmd.' '.$options['cli'];
-        $allOptions = $options['run_all'];
-        unset($options['run_all']);
-        $allOptions = array_merge($options,$allOptions);
-        $this->cmdRunAll = $cmd.' '.$allOptions['cli'];
+        $allCli = isset($options['run_all_cli']) ? $options['run_all_cli']:$options['cli'];
+        $this->cmdRunAll = $cmd.' '.$allCli;
     }
 
     public static function getCacheFileName()
@@ -168,7 +166,6 @@ class Inspector extends ContainerAware implements LoggerAwareInterface
 
         // start to run phpspec command
         $arguments = explode(' ',$command);
-
         $builder = new ProcessBuilder($arguments);
         $runner = $this->getRunner();
         $runner->run($builder);

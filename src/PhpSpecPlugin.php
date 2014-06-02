@@ -102,16 +102,13 @@ class PhpSpecPlugin extends Plugin
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'cli' => '--format pretty --ansi',
+            'cli' => null,
             'all_on_start' => false,
             'all_after_pass' => false,
             'keep_failed' => false,
             'import_suites' => false, // import suites as watcher
             'always_lint' => true,
-            'run_all' => array(
-                'format' => 'progress',
-                'cli' => '--format dot --ansi'
-            )
+            'run_all_cli' => null
         ));
     }
 }

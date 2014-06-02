@@ -63,7 +63,7 @@ class PhpSpecPluginSpec extends ObjectBehavior
 
         $options = $this->getOptions();
 
-        $options->shouldHaveKey('run_all');
+        $options->shouldHaveKey('run_all_cli');
         $options->shouldHaveKey('cli');
         $options->shouldHaveKey('all_after_pass');
         $options->shouldHaveKey('keep_failed');
