@@ -38,7 +38,8 @@ class PhpSpecPlugin extends Plugin
 
     public function started(GenericEvent $event)
     {
-        if($this->options['all_on_start']){
+        if ($this->options['all_on_start']) {
+            $this->logger->addCommon('Run all on start');
             $this->logger->addDebug('Begin executing all on start');
             $event->addProcessEvent($this->runAll());
             $this->logger->addDebug('End executing all on start');
@@ -79,6 +80,7 @@ class PhpSpecPlugin extends Plugin
             $inspector = new Inspector();
             $inspector->setLogger($logger);
             $inspector->setContainer($c);
+
             return $inspector;
         });
     }
