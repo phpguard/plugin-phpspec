@@ -20,6 +20,7 @@ use PhpGuard\Plugins\PhpSpec\Bridge\PhpGuardExtension;
 use PhpGuard\Plugins\PhpSpec\Inspector;
 use PhpSpec\Console\Application as BaseApplication;
 use PhpSpec\ServiceContainer;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Class Application
@@ -45,7 +46,7 @@ class Application extends BaseApplication
         $this->configureErrorHandler();
     }
 
-    protected function loadConfigurationFile(ServiceContainer $container)
+    protected function loadConfigurationFile(InputInterface $input, ServiceContainer $container)
     {
         $container->setShared('event_dispatcher.listeners.phpguard',function ($c) {
             $ext = new PhpGuardExtension();
@@ -56,7 +57,7 @@ class Application extends BaseApplication
 
             return $ext;
         });
-        parent::loadConfigurationFile($container);
+        parent::loadConfigurationFile($input,$container);
     }
 
     /**
